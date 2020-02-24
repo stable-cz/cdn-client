@@ -1,3 +1,4 @@
 Stable CDN Client
 ---
-Class documentation: http://cdn.stable.cz/docs/cdn-client/html/classes/Stable_Cdn_Client.html
+- Class documentation: http://cdn.stable.cz/docs/cdn-client/html/classes/Stable_Cdn_Client.html
+- Basic examples: `php example/example.php YOUR_API_KEY`
