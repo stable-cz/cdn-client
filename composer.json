@@ -1,8 +1,13 @@
 {
     "name": "stable-cz/cdn-client",
+    "description": "Basic PHP CDN Client for Stable.cz customers",
     "version": "0.9",
-    "source": {
-        "url": "https://github.com/stable-cz/cdn-client",
-        "type": "git"
+    "homepage": "https://www.stable.cz",
+
+    "require": {
+		"php": ">=7.1"
+    },
+    "autoload" : {
+        "classmap" : [ "src/" ]
     }
 }
