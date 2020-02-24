@@ -1,8 +1,10 @@
 {
     "name": "stable-cz/cdn-client",
     "description": "Basic PHP CDN Client for Stable.cz customers",
+    "author" : "Evzen Eiba <evzen.eiba@stable.cz>",
     "version": "0.9",
     "homepage": "https://www.stable.cz",
+    "licence" : "MIT",
 
     "require": {
 		"php": ">=7.1"
