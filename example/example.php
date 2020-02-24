@@ -1,5 +1,11 @@
 <?php
 
+// Param?
+if (!isset($GLOBALS['argv'][1])) {
+    die("Specify your API key as first CLI param please\n");
+}
+
+
 // Helper functions
 
 function dump($var, $color = '#666') {
@@ -31,10 +37,6 @@ function dump($var, $color = '#666') {
 }
 
 
-// Param?
-if (!isset($GLOBALS['argv'][1])) {
-    die("Specify API key as firt CLI param please\n");
-}
 
 // Load
 if (file_exists(__DIR__ . '/../src/Client/Client.php')) {
