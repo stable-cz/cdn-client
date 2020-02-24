@@ -1,0 +1,8 @@
+{
+    "name": "stable-cz/cdn-client",
+    "version": "0.9",
+    "source": {
+        "url": "https://github.com/stable-cz/cdn-client",
+        "type": "git"
+    }
+}
