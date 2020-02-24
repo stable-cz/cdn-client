@@ -96,7 +96,7 @@ class Client {
      * @param (string) $target  - target file path
      * @return (object)         - decoded JSON according to API definition or null in case of system fault
      */
-    public function uploadFile(string $file, string $target):? object {
+    public function upload(string $file, string $target):? object {
         $res = $this->call('files', null, 'POST', 
             [ 'data' => [ 'filename' => $target, 'content' => base64_encode(file_get_contents($file)) ] ] );
         return $res;
@@ -109,7 +109,7 @@ class Client {
      */
      
 
-    public function deleteFile(string $file):? object {
+    public function delete(string $file):? object {
         $res = $this->call('files', $file, 'DELETE');
         return $res;
     }

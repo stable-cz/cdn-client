@@ -62,7 +62,7 @@ $testfile = tempnam('/tmp', 'rwer');
 file_put_contents($testfile, sha1(microtime(true)));
 $testfiletarget = 'cesticka/k/souboru/daleka/soubor.jpg';
 
-$res = $c->uploadFile($testfile, $testfiletarget);
+$res = $c->upload($testfile, $testfiletarget);
 dump($res,  !empty($res->data) ? 'green' : 'red');
 if (!empty($res->data->url)) {
     $file = file_get_contents('http:' . $res->data->url);
@@ -76,7 +76,7 @@ dump($res,  !empty($res->data) ? 'green' : 'red');
 
 
 dump('========= TEST DELETE ===========', 'black');
-$res = $c->deleteFile('cesticka/k/souboru/daleka/soubor.jpg');
+$res = $c->delete('cesticka/k/souboru/daleka/soubor.jpg');
 dump($res,  !empty($res->data) ? 'green' : 'red');
 
 dump('========= TEST LS DELETED FILE ===========', 'black');
