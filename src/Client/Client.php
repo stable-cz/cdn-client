@@ -4,12 +4,30 @@
 namespace Stable\Cdn;
 
 /** 
- * Basic Stable.cz CDN client
+ * Stable.cz CDN client
  *
+ * Basic usage examples:
+ * 
+ * // construct
+ * $client = new \Stable\Cdn\Client($GLOBALS['argv'][1]);
+ * 
+ * // create some local file
+ * file_put_contents('localfile', date('Y-m-d'));
+ * 
+ * // upload file
+ * $client->upload('localfile', 'path/to/remotefile');
+ * 
+ * // verify file exists
+ * $client->ls('path/to/remotefile');
+ * 
+ * // list files in directory
+ * $client->ls('path/to');
+ * 
+ * // delete remote file
+ * $client->delete('path/to/remotefile');
+ * 
  * @author Evzen Eiba <evzen.eiba@stable.cz>
  * @copyright Stable.cz
- * 
- * 
  * 
  */
 
@@ -19,7 +37,7 @@ class Client {
     /** 
      * @var string URL given to contructor
      */
-    protected $url;
+    protected $url = 'https://cdn.stable.cz/';
     
     /**
      * @var string API key given to constructor
@@ -37,9 +55,9 @@ class Client {
      * @param $url Endpoint url (http://domain/, rest is concatenated automatically
      * @return null
      */
-    public function __construct($apikey, $url = 'http://cdn.stable.cz/')  {
+    public function __construct($apikey)  {
         $this->apikey = $apikey;
-        $this->url = $url;
+        // $this->url = $url;
     }
     
     /**
@@ -49,10 +67,10 @@ class Client {
      * @param (array) $params           - call params, eg. metadata for uploaded file
      * @param (string) $method          - HTTP method (GET|POST|DELETE)
      * @throws Exception                - in case of wrong method
-     * @return (object)                 - decoded JSON according to API definition or null in case of system fault
+     * @return (stdClass)                 - decoded JSON according to API definition or null in case of system fault
      */
     
-    protected function call(string $namespace, string $path = null, string $method, array $params = []):? object {
+    protected function call(string $namespace, string $path = null, string $method, array $params = []):? \stdClass {
         $url = rtrim($this->url, '/') . '/api/' . trim($namespace, '/') . '/' . ltrim($path, '/');
 
         $params['auth'] = $this->apikey;
@@ -94,9 +112,9 @@ class Client {
      * Uploads a file to target
      * @param (string) $file    - source file path
      * @param (string) $target  - target file path
-     * @return (object)         - decoded JSON according to API definition or null in case of system fault
+     * @return (stdClass)         - decoded JSON according to API definition or null in case of system fault
      */
-    public function upload(string $file, string $target):? object {
+    public function upload(string $file, string $target):? \stdClass {
         $res = $this->call('files', null, 'POST', 
             [ 'data' => [ 'filename' => $target, 'content' => base64_encode(file_get_contents($file)) ] ] );
         return $res;
@@ -105,22 +123,22 @@ class Client {
     /**
      * Delete an existing file
      * @param (string) $file    - path to existing file
-     * @return (object)         - decoded JSON according to API definition or null in case of system fault
+     * @return (stdClass)         - decoded JSON according to API definition or null in case of system fault
      */
      
 
-    public function delete(string $file):? object {
+    public function delete(string $file):? \stdClass {
         $res = $this->call('files', $file, 'DELETE');
         return $res;
     }
     
     /**
-     * LS an existing file or directory
+     * List an existing file or directory - get a file info or a directory and its files
      * @param (string) $path    - path to a file or directory
-     * @return (object)         - decoded JSON according to API definition or null in case of system fault
+     * @return (stdClass)         - decoded JSON according to API definition or null in case of system fault
      */
 
-    public function ls(string $path):? object {
+    public function ls(string $path):? \stdClass {
         $res = $this->call('files', $path, 'GET');
         return $res;
         

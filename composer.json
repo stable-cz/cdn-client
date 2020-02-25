@@ -4,7 +4,7 @@
     "author" : "Evzen Eiba <evzen.eiba@stable.cz>",
     "version": "0.9",
     "homepage": "https://www.stable.cz",
-    "licence" : [ "MIT" ],
+    "license" : "MIT",
 
     "require": {
 		"php": ">=7.1"
