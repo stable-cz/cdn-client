@@ -1,11 +1,10 @@
-Stable CDN Client
----
-- Class documentation: http://cdn.stable.cz/docs/cdn-client/html/classes/Stable_Cdn_Client.html
+### Stable CDN Client
 
-- Another basic examples: `php example/example.php YOUR_API_KEY`
+* Class documentation: http://cdn.stable.cz/docs/cdn-client/html/classes/Stable_Cdn_Client.html
+* Another basic examples: `php example/example.php YOUR_API_KEY`
 
- * Basic usage examples:
- * 
+ ##### Basic usage examples:
+ 
  * // construct
  * $client = new \Stable\Cdn\Client(YOUR_API_KEY);
  * 
@@ -24,3 +23,6 @@ Stable CDN Client
  * // delete remote file
  * $client->delete('path/to/remotefile');
  
+
+
+
