@@ -9,7 +9,7 @@ namespace Stable\Cdn;
  * Basic usage examples:
  * 
  * // construct
- * $client = new \Stable\Cdn\Client($GLOBALS['argv'][1]);
+ * $client = new \Stable\Cdn\Client(YOUR_API_KEY);
  * 
  * // create some local file
  * file_put_contents('localfile', date('Y-m-d'));
@@ -48,6 +48,15 @@ class Client {
      * @var string Last curlcall curlinfo
      */
     public $curlLastInfo = null;
+    /**
+     * @var string Last curlcall result
+     */
+    public $curlLastResult = null;
+    
+    /**
+     * @var int Maximum size of a upload batch
+     */
+     public $chunkFileSize = 5 * 1024 * 1024;
     
     /**
      * Constructor
@@ -99,6 +108,8 @@ class Client {
         curl_setopt_array($ch, $options);
         $res = curl_exec($ch);
         $this->curlLastInfo = curl_getinfo($ch);
+        $this->curlLastResult = $res;
+        // var_dump($this->curlLastResult);
 
         if ($res) {
             return json_decode($res);
@@ -112,12 +123,72 @@ class Client {
      * Uploads a file to target
      * @param (string) $file    - source file path
      * @param (string) $target  - target file path
+     * @param (callable) $callback  - callback for upload progress
      * @return (stdClass)         - decoded JSON according to API definition or null in case of system fault
      */
-    public function upload(string $file, string $target):? \stdClass {
-        $res = $this->call('files', null, 'POST', 
-            [ 'data' => [ 'filename' => $target, 'content' => base64_encode(file_get_contents($file)) ] ] );
-        return $res;
+    public function upload(string $file, string $target, callable $callback = null):? \stdClass {
+        $filesize = filesize($file);
+
+        if ($filesize > $this->chunkFileSize) {
+
+            $i = 0;
+            $progress = 0;
+            $start = microtime(true);
+
+            $parts = $filesize / $this->chunkFileSize;
+
+            $f = fOpen($file, 'r');
+            
+            if ($callback) {
+                $callback((object) [
+                      'chunk' => -1
+                    , 'progress' => $progress
+                    , 'total_filesize' => $filesize
+                    , 'chunkresult' => null]);
+            }
+
+            while ($chunk = fread($f, $this->chunkFileSize)) {
+
+                $res = $this->call('files', null, 'POST', 
+                    [ 'data' => [ 
+                          'filename' => $target
+                        , 'chunk' => $i
+                        , 'content' => base64_encode($chunk) ] ] );
+                $progress += strlen($chunk);
+                $eta = ( (microtime(true) - $start) / ($i+1) * $parts ) - (microtime(true) - $start);
+                $d1 = new \DateTime; $d1->setTimestamp(0);
+                $d2 = new \DateTime; $d2->setTimestamp((int) $eta);
+                $eta_formatted = $d2->diff($d1)->format('%H:%I:%S');
+
+                if ($callback) {
+                    $callback((object) [
+                                  'chunk' => $i
+                                , 'progress' => $progress
+                                , 'total_filesize' => $filesize
+                                , 'eta' => $eta
+                                , 'eta_formatted' => $eta_formatted
+                                , 'chunkresult' => $res]);
+                }
+                $i++;
+            }
+            
+            fClose($f);
+            return $res; // return last result;
+            
+        } else {
+            $res = $this->call('files', null, 'POST', 
+                [ 'data' => [ 'filename' => $target, 'content' => base64_encode(file_get_contents($file)) ] ] );
+            if ($callback) {
+                $callback((object) [
+                                  'chunk' => 0
+                                , 'progress' => $filesize
+                                , 'total_filesize' => $filesize
+                                , 'eta' => 0
+                                , 'eta_formatted' => 0
+                                , 'chunkresult' => $res]);
+            }
+            return $res;
+        }
     }
     
     /**

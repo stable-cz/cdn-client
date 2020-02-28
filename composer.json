@@ -2,7 +2,7 @@
     "name": "stable-cz/cdn-client",
     "description": "Basic PHP CDN Client for Stable.cz customers",
     "author" : "Evzen Eiba <evzen.eiba@stable.cz>",
-    "version": "0.9.1",
+    "version": "0.9.2",
     "homepage": "https://www.stable.cz",
     "license" : "MIT",
 
