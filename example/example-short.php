@@ -29,8 +29,8 @@ $r = [];
 
 $r[] = $client->configure('sizes', 'get');
 $r[] = $client->configure('sizes', 'get', 800);
-$r[] = $client->configure('sizes', 'add', 300);
-$r[] = $client->configure('sizes', 'add', 300);
+$r[] = $client->configure('sizes', 'add', ['size' => 300]);
+$r[] = $client->configure('sizes', 'add', ['size' => 800]);
 $r[] = $client->configure('sizes', 'get', 800);
 $r[] = $client->configure('sizes', 'delete', 300);
 $r[] = $client->configure('sizes', 'get', 800);

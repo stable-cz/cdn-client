@@ -226,7 +226,7 @@ class Client {
     public function configure(string $what, string $action, $value = null):? \stdClass {
         switch(strtolower($action)) {
             case 'get' : return $this->call($what, $value, 'GET');
-            case 'add' : return $this->call($what, null, 'POST', [ 'data' => [ $what => $value ] ]);
+            case 'add' : return $this->call($what, null, 'POST', [ 'data' => $value ]);
             case 'delete' : return $this->call($what, $value, 'DELETE');
         }
     }
