@@ -223,7 +223,7 @@ class Client {
      * @return (stdClass)         - decoded JSON according to API definition or null in case of system fault
      */
     
-    public function configure(string $what, string $action, $value = null) {
+    public function configure(string $what, string $action, $value = null):? \stdClass {
         switch(strtolower($action)) {
             case 'get' : return $this->call($what, $value, 'GET');
             case 'add' : return $this->call($what, null, 'POST', [ 'data' => [ $what => $value ] ]);
