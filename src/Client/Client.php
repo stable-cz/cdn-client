@@ -109,7 +109,7 @@ class Client {
         $res = curl_exec($ch);
         $this->curlLastInfo = curl_getinfo($ch);
         $this->curlLastResult = $res;
-        // var_dump($this->curlLastResult);
+        var_dump($this->curlLastResult);
 
         if ($res) {
             return json_decode($res);
@@ -213,5 +213,21 @@ class Client {
         $res = $this->call('files', $path, 'GET');
         return $res;
         
+    }
+    
+    /**
+     * Configure CDN (currently resizer sizes only)
+     * @param (string) $what - configuration part ('sizes');
+     * @param (string) $action - one of get|add|delete action
+     * @param $value - optional value
+     * @return (stdClass)         - decoded JSON according to API definition or null in case of system fault
+     */
+    
+    public function configure(string $what, string $action, $value = null) {
+        switch(strtolower($action)) {
+            case 'get' : return $this->call($what, $value, 'GET');
+            case 'add' : return $this->call($what, null, 'POST', [ 'data' => [ $what => $value ] ]);
+            case 'delete' : return $this->call($what, $value, 'DELETE');
+        }
     }
 }

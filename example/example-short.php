@@ -26,6 +26,15 @@ $client = new \Stable\Cdn\Client($GLOBALS['argv'][1]);
 
 file_put_contents('localfile', str_repeat('x', 2 * $client->chunkFileSize));
 $r = [];
+
+$r[] = $client->configure('sizes', 'get');
+$r[] = $client->configure('sizes', 'get', 800);
+$r[] = $client->configure('sizes', 'add', 300);
+$r[] = $client->configure('sizes', 'add', 300);
+$r[] = $client->configure('sizes', 'get', 800);
+$r[] = $client->configure('sizes', 'delete', 300);
+$r[] = $client->configure('sizes', 'get', 800);
+
 $r[] = $client->upload('localfile', 'path/to/remotefile');
 $r[] = $client->upload('localfile', 'path/to/remotefile', $progress);
 $r[] = $client->ls('path/to/remotefile');
