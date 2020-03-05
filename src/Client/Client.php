@@ -57,6 +57,12 @@ class Client {
      * @var int Maximum size of a upload batch
      */
      public $chunkFileSize = 5 * 1024 * 1024;
+     
+     
+     /**
+      * @var array Request/response storage
+      */
+    public $calls = [];
     
     /**
      * Constructor
@@ -88,11 +94,11 @@ class Client {
             , CURLOPT_RETURNTRANSFER    => true
             , CURLINFO_HEADER_OUT       => true
         ];
+        $options[CURLOPT_CUSTOMREQUEST]         = strtoupper($method);
         switch (strtoupper($method)) {
             case 'DELETE' : 
             case 'GET' : 
                 $options[CURLOPT_URL]                  .= '?' . http_build_query($params);
-                $options[CURLOPT_CUSTOMREQUEST]         = strtoupper($method);
                 break;
             case 'POST' :
                 $options[CURLOPT_POST]          = true;
@@ -109,14 +115,20 @@ class Client {
         $res = curl_exec($ch);
         $this->curlLastInfo = curl_getinfo($ch);
         $this->curlLastResult = $res;
-        var_dump($this->curlLastResult);
+        // var_dump($this->curlLastResult);
 
+        $ret = null;
         if ($res) {
-            return json_decode($res);
+            $ret = json_decode($res);
         }
+        $this->calls[] = [
+              'url' => str_replace($this->apikey ,'YOUR_API_KEY', $options[CURLOPT_URL])
+            , 'method' => $options[CURLOPT_CUSTOMREQUEST]
+            , 'data' => !empty($options[CURLOPT_POSTFIELDS]) ? str_replace($this->apikey ,'YOUR_API_KEY', json_encode($params, JSON_PRETTY_PRINT)) : null
+            , 'response' => $ret ? str_replace($this->apikey ,'YOUR_API_KEY', json_encode($ret, JSON_PRETTY_PRINT)) : false
+        ];
         
-        
-        return null;
+        return $ret;
     }
     
     /**
